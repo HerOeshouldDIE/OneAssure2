@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Insurance Premium Calculator</title>
+    <style>
+        /* Styles here */
+    </style>
+</head>
+<body>
+    <h1>Insurance Premium Calculator</h1>
+    <div id="premiumForm">
+        <label for="ages">Ages (Comma-separated)</label>
+        <input type="text" id="ages" name="ages" placeholder="Enter ages">
+
+        <label for="sumInsured">Sum Insured</label>
+        <input type="text" id="sumInsured" name="sumInsured" placeholder="Enter sum insured">
+
+        <label for="cityTier">City Tier</label>
+        <select id="cityTier" name="cityTier">
+            <option value="1">Tier 1</option>
+            <option value="2">Tier 2</option>
+            <option value="3">Tier 3</option>
+        </select>
+
+        <label for="tenure">Tenure (in years)</label>
+        <input type="text" id="tenure" name="tenure" placeholder="Enter tenure">
+
+        <button onclick="calculatePremium()">Calculate Premium</button>
+    </div>
+
+    <div id="premiumResult" style="display: none;">
+        <h3>Premium Result</h3>
+        <p id="premiumAmount"></p>
+    </div>
+
+    <script>
+        function calculatePremium() {
+            var ages = document.getElementById('ages').value.split(',');
+            var sumInsured = document.getElementById('sumInsured').value;
+            var cityTier = document.getElementById('cityTier').value;
+            var tenure = document.getElementById('tenure').value;
+
+            var data = {
+                ages: ages,
+                sumInsured: sumInsured,
+                cityTier: cityTier,
+                tenure: tenure
+            };
+
+            fetch('/calculate_premium', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('premiumAmount').textContent = data.premium;
+                document.getElementById('premiumResult').style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
